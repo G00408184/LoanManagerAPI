@@ -17,6 +17,6 @@ public class Loan {
     private String email;
     private boolean extensionAllowed;
     private int extensionCount;
-    private boolean isOverdue;
+    private boolean Overdue;
     private String status;
 }
