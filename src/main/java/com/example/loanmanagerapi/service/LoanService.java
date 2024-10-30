@@ -19,7 +19,9 @@ public class LoanService {
     public Loan createLoan(Loan loan) {
         loan.setCheckoutDate(LocalDate.now());
         loan.setExpiredDate(LocalDate.now().plusWeeks(2)); // Example 2-week loan period
-        loan.setOverdue(false); // Updated field name to 'overdue'
+        loan.setOverdue(false); // Set overdue to false initially
+        loan.setExtensionCount(0); // Set initial extension count to 0
+        loan.setStatus("Active"); // Set initial status to "Active" or a default status
         return loanRepository.save(loan);
     }
 
