@@ -3,7 +3,7 @@ package com.example.loanmanagerapi.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "user-service", url = "http://localhost:8082")
+@FeignClient(name = "user-service", url = "http://localhost:8081/api/user")
 public interface UserClient {
 
     // Example: record that a user has returned a book
@@ -17,5 +17,6 @@ public interface UserClient {
     @GetMapping("/api/users/{userId}/isAdmin")
     boolean checkAdmin(@PathVariable("userId") Long userId);
 
-    // Additional endpoints as needed
+    @GetMapping("/Check/User/{id}")
+    boolean checkUserByID(@PathVariable("id") long id);
 }

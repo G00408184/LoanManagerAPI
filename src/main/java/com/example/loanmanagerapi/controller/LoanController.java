@@ -1,6 +1,8 @@
 package com.example.loanmanagerapi.controller;
 
 import com.example.loanmanagerapi.entity.Loan;
+import com.example.loanmanagerapi.feign.AdminClient;
+import com.example.loanmanagerapi.feign.UserClient;
 import com.example.loanmanagerapi.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +16,23 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
 
-    @PostMapping
+
+
+    @PostMapping("/create")
     public Loan createLoan(@RequestBody Loan loan) {
+
         return loanService.createLoan(loan);
     }
 
-    @PostMapping("/admin")
-    public Loan createLoanWithAdminCheck(
-            @RequestBody Loan loan,
-            @RequestParam Long userId,
-            @RequestParam Long bookId
-    ) {
-        return loanService.createLoanWithAdminCheck(loan, userId, bookId);
-    }
 
     @PutMapping("/{loanId}/extend")
-    public Loan extendLoan(@PathVariable Long loanId) {
-        return loanService.extendLoan(loanId);
+    public void extendLoan(@PathVariable Long loanId) {
+        // Get Admin permission
+         loanService.extendLoan(loanId);
+    }
+    @PutMapping("/PermissionGranted/{loanId}")
+    public Loan extendLoan(@PathVariable String loanId) {
+         return loanService.permissionGranted(loanId);
     }
 
     @GetMapping("/{loanId}/days-left")
@@ -38,13 +40,14 @@ public class LoanController {
         return loanService.getDaysLeft(loanId);
     }
 
-    @GetMapping("/find")
-    public Loan getLoanByTitleAndAuthor(
+    @GetMapping("/findByTitleAndAuthor")
+    public List<Loan> getLoanByTitleAndAuthor(
             @RequestParam("title") String bookTitle,
             @RequestParam("author") String author
     ) {
         return loanService.getLoanByTitleAndAuthor(bookTitle, author);
     }
+
 
     @GetMapping("/overdue")
     public List<Loan> getAllOverdueLoans() {
@@ -52,19 +55,14 @@ public class LoanController {
     }
 
     @GetMapping("/{loanId}/info")
-    public String getSelectedInfo(
-            @PathVariable Long loanId,
-            @RequestParam String infoType
-    ) {
+    public String getSelectedInfo(@PathVariable Long loanId, @RequestParam String infoType) {
         return loanService.getSelectedInfo(loanId, infoType);
     }
 
     @PutMapping("/{loanId}/return")
     public void returnLoan(
-            @PathVariable Long loanId,
-            @RequestParam Long userId,
-            @RequestParam Long bookId
+            @PathVariable Long loanId
     ) {
-        loanService.returnLoan(loanId, userId, bookId);
+        loanService.returnLoan(loanId);
     }
 }
