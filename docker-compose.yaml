@@ -23,7 +23,7 @@ services:
   loan-service:
     build:
       context: .
-      dockerfile: ./src/main/DockerBase/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"  # Unique port for the loan service
     environment:
