@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  # MySQL Container for the loan microservice
+  db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3307:3306"  # Unique port for the loan service
+    environment:
+      MYSQL_DATABASE: loan
+      MYSQL_ROOT_PASSWORD: Password
+    volumes:
+      - mysql-loan-data:/var/lib/mysql
+
+    # Health check to ensure MySQL is ready before starting the service
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 5
+
+  # Loan Microservice
+  loan-service:
+    build:
+      context: .
+      dockerfile: ./src/main/DockerBase/Dockerfile
+    ports:
+      - "8080:8080"  # Unique port for the loan service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/loan
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Password
+      SPRING_RABBITMQ_ADDRESSES: amqp://rabbitmq:5672  # Shared RabbitMQ instance
+    depends_on:
+      db:
+        condition: service_healthy  # Wait for MySQL to be ready
+
+volumes:
+  mysql-loan-data:
+    driver: local
