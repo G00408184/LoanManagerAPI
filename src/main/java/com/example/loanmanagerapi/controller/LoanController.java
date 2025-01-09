@@ -30,9 +30,10 @@ public class LoanController {
         // Get Admin permission
          loanService.extendLoan(loanId);
     }
-    @PutMapping("/PermissionGranted/{loanId}")
-    public Loan extendLoan(@PathVariable String loanId) {
-         return loanService.permissionGranted(loanId);
+    @GetMapping ("/PermissionGranted/{loanId}")
+    public String extendLoan(@PathVariable String loanId) {
+          loanService.permissionGranted(loanId);
+          return "It worked";
     }
 
     @GetMapping("/{loanId}/days-left")
